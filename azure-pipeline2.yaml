@@ -1,0 +1,25 @@
+---
+schedules:
+- cron: '* * * * *'
+  displayName: build whenever developer submits 
+  branches:
+    include:
+    - main
+  always: true
+stages:
+  - stage: buildimage
+    displayName: buildusing docker
+    pool:
+      name: Default
+    jobs:
+      - job: building 
+        displayName: build it first
+        steps:
+          - task: Docker@2
+            displayName: 'Build docker image and push to repository'
+            inputs:
+              command: buildAndPush
+              Dockerfile: 'Dockerfile'
+              containerRegistry: 'Dockerhub'
+              repository: 'ajaykumar020/springpetclinic'
+              tags: '$(Build.BuildId)'

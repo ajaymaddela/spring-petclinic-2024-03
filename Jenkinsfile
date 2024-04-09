@@ -14,11 +14,12 @@ pipeline {
             steps {
                 sh 'mvn clean package'
             }
+        
+            post {
+                success {
+                    archiveArtifacts '**/target/spring*.jar'
+                }
+            }
         }
-    post {
-         always {
-            archiveArtifacts artifacts:'**/target/spring*.jar'
-         }
-    }
     }
 }

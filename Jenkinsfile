@@ -16,7 +16,7 @@ pipeline {
             }
         }
     post {
-        success {
+        always {
             archiveArtifacts artifacts:'**/target/spring*.jar'
         }
     }

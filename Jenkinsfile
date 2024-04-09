@@ -15,10 +15,10 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        post {
-            success {
-                archiveArtifacts artifacts:'**/target/spring*.jar'
-            }
+    post {
+        success {
+            archiveArtifacts artifacts:'**/target/spring*.jar'
         }
+    }
     }
 }

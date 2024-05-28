@@ -1,10 +1,36 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~>3.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+#terraform {
+ # backend "azurerm" {
+  #  storage_account_name = "jenkinsdec23"
+   # container_name       = "lock"
+    #key                  = "sanu.tfstate"
+    #resource_group_name = "sanu"
+  #}
+#}
+
 resource "azurerm_resource_group" "example" {
-  name     = "demo-resources"
-  location = "eastus"
+  name     = "example-resources"
+  location = "East US"
 }
 
 resource "azurerm_kubernetes_cluster" "example" {
-  name                = "myAKSCluster"
+  name                = "example-aks1"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   dns_prefix          = "exampleaks1"
@@ -20,21 +46,22 @@ resource "azurerm_kubernetes_cluster" "example" {
   }
 
   tags = {
-    Environment = "Development"
-  }
-  provisioner "local-exec" {
-    command = "az aks get-credentials --resource-group demo-resources --name myAKSCluster"
-      
+    Environment = "Production"
   }
 }
 
 output "client_certificate" {
-  value     = azurerm_kubernetes_cluster.example.kube_config[0].client_certificate
+  value = azurerm_kubernetes_cluster.example.kube_config.0.client_certificate
   sensitive = true
 }
 
-output "kube_config" {
-  value = azurerm_kubernetes_cluster.example.kube_config_raw
 
-  sensitive = true
+resource "null_resource" "get_kube_config" {
+  triggers = {
+    cluster_id = azurerm_kubernetes_cluster.example.id
+  }
+
+  provisioner "local-exec" {
+    command = "az aks get-credentials --resource-group ${azurerm_resource_group.example.name} --name ${azurerm_kubernetes_cluster.example.name} --overwrite-existing"
+  }
 }

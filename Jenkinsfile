@@ -11,6 +11,13 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/ajaymaddela/spring-petclinic-2024-03.git'
             }
         }
+        stage('build') {
+            steps {
+                sh 'mvn clean package'
+                junit testResults: '**/surefire-reports/*.xml'
+            }
+        }
+        
         stage('Build docker image') {
             steps {
                 sh "docker image build -t ajaykumar020/spc:1.0 ."

@@ -18,7 +18,7 @@ spec:
         image: ajaykumar020/springpetclinic:latest
         resources:
           limits:
-            memory: "128Mi"
+            memory: "350Mi"
             cpu: "500m"
         ports:
         - containerPort: 8080

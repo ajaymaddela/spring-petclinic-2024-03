@@ -55,6 +55,11 @@ output "client_certificate" {
   sensitive = true
 }
 
+output "kube_config" {
+  value = azurerm_kubernetes_cluster.example.kube_config_raw
+
+  sensitive = true
+}
 
 resource "null_resource" "get_kube_config" {
   triggers = {

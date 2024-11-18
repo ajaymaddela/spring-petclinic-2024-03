@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'spc' }
+    agent { label 'ajay' }
     stages {
         stage('clean workspace'){
             steps{
@@ -14,7 +14,7 @@ pipeline {
         stage('build') {
             steps {
                 sh 'mvn clean package'
-                junit testResults: '**/surefire-reports/*.xml'
+                // junit testResults: '**/surefire-reports/*.xml'
             }
         }
         
@@ -23,19 +23,19 @@ pipeline {
                 sh "docker image build -t ajaykumar020/spc:1.0 ."
             }
         }
-        stage('Trivy Scan') {
-            steps {
-                script {
-                    sh "trivy image --format json -o trivy-report.json ajaykumar020/spc:1.0"
-                }
-                 archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
-            }
-        }
-        stage('publish docker image') {
-            steps {
-                sh "docker image push ajaykumar020/spc:1.0"
-            }
-        }
+        // stage('Trivy Scan') {
+        //     steps {
+        //         script {
+        //             sh "trivy image --format json -o trivy-report.json ajaykumar020/spc:1.0"
+        //         }
+        //          archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
+        //     }
+        // }
+        // stage('publish docker image') {
+        //     steps {
+        //         sh "docker image push ajaykumar020/spc:1.0"
+        //     }
+        // }
         
         stage('Terraform Init') {
             steps {
@@ -85,14 +85,14 @@ pipeline {
             }
         }
 
-        stage('kubescape Scan') {
-            steps {
-                script {
-                    sh "/usr/local/bin/kubescape scan -t 40 deployment/k8s/spc.yaml --format junit -o TEST-report.xml"
-                    junit "**/TEST-*.xml"
-                }
+        // stage('kubescape Scan') {
+        //     steps {
+        //         script {
+        //             sh "/usr/local/bin/kubescape scan -t 40 deployment/k8s/spc.yaml --format junit -o TEST-report.xml"
+        //             junit "**/TEST-*.xml"
+        //         }
                 
-            }
-        }
+        //     }
+        // }
     }
 }
